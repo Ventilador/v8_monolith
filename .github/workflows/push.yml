@@ -2,7 +2,7 @@ name: build and publish v8 libs
 on: [push]
 
 env:
-  V8_VERSION: "14.6.202.22"
+  V8_VERSION: "14.6"
 
 defaults:
   run:
