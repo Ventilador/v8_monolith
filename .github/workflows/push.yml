@@ -9,7 +9,7 @@ on:
         type: string
       version:
         description: 'v8 version to build'
-        default: false
+        default: 14.6
         required: false
         type: string
 
