@@ -1,16 +1,17 @@
 name: build and publish v8 libs (push)
-on: [workflow_dispatch]
-inputs:
-  enable-v8-checks:
-    description: 'Whether to build with v8_enable_v8_checks gn ar'
-    default: false
-    required: false
-    type: string
-  version:
-    description: 'v8 version to build'
-    default: false
-    required: false
-    type: string
+on: 
+  workflow_dispatch:
+    inputs:
+      enable-v8-checks:
+        description: 'Whether to build with v8_enable_v8_checks gn ar'
+        default: false
+        required: false
+        type: string
+      version:
+        description: 'v8 version to build'
+        default: false
+        required: false
+        type: string
 
 env:
   V8_VERSION: "${{inputs.version}}"
