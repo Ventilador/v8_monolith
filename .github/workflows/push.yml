@@ -1,14 +1,20 @@
 name: build and publish v8 libs (push)
-on: [push]
-
+on: [workflow_dispatch]
 inputs:
   enable-v8-checks:
     description: 'Whether to build with v8_enable_v8_checks gn ar'
     default: false
     required: false
     type: string
+  version:
+    description: 'v8 version to build'
+    default: false
+    required: false
+    type: string
+
 env:
-  V8_VERSION: "14.6"
+  V8_VERSION: "${{inputs.version}}"
+  V8_CHECKS: "${{inputs.enable-v8-checks}}"
 
 defaults:
   run:
@@ -29,6 +35,8 @@ jobs:
         uses: actions/checkout@v3
       - name: compile v8
         run: |
+          echo V8_VERSION=$V8_VERSION
+          echo V8_CHECKS=$V8_CHECKS
           git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
           export PATH="$GITHUB_WORKSPACE/depot_tools:${PATH}"
           gclient
@@ -39,7 +47,7 @@ jobs:
           ./build/install-build-deps.sh
           mkdir -p out.gn/linux.${{ matrix.platform }}.release/
           cp ${{ github.workspace }}/args.linux.${{ matrix.platform }}.gn $GITHUB_WORKSPACE/v8/out.gn/linux.${{ matrix.platform }}.release/args.gn
-          echo v8_enable_v8_checks=${{inputs.enable-v8-checks}} > $GITHUB_WORKSPACE/v8/out.gn/linux.${{ matrix.platform }}.release/args.gn
+          echo v8_enable_v8_checks=$V8_CHECKS > $GITHUB_WORKSPACE/v8/out.gn/linux.${{ matrix.platform }}.release/args.gn
           cat $GITHUB_WORKSPACE/v8/out.gn/linux.${{ matrix.platform }}.release/args.gn
           gn gen out.gn/linux.${{ matrix.platform }}.release
           ninja v8_monolith -C out.gn/linux.${{ matrix.platform }}.release/
