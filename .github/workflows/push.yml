@@ -1,6 +1,12 @@
-name: build and publish v8 libs
+name: build and publish v8 libs (push)
 on: [push]
 
+inputs:
+  enable-v8-checks:
+    description: 'Whether to build with v8_enable_v8_checks gn ar'
+    default: false
+    required: false
+    type: string
 env:
   V8_VERSION: "14.6"
 
@@ -33,6 +39,8 @@ jobs:
           ./build/install-build-deps.sh
           mkdir -p out.gn/linux.${{ matrix.platform }}.release/
           cp ${{ github.workspace }}/args.linux.${{ matrix.platform }}.gn $GITHUB_WORKSPACE/v8/out.gn/linux.${{ matrix.platform }}.release/args.gn
+          echo v8_enable_v8_checks=${{inputs.enable-v8-checks}} > $GITHUB_WORKSPACE/v8/out.gn/linux.${{ matrix.platform }}.release/args.gn
+          cat $GITHUB_WORKSPACE/v8/out.gn/linux.${{ matrix.platform }}.release/args.gn
           gn gen out.gn/linux.${{ matrix.platform }}.release
           ninja v8_monolith -C out.gn/linux.${{ matrix.platform }}.release/
           gn args --list out.gn/linux.${{ matrix.platform }}.release
